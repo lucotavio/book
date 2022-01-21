@@ -3,6 +3,7 @@ package br.com.luciano.library.controller;
 import br.com.luciano.library.dto.BookDTO;
 import br.com.luciano.library.model.Book;
 import br.com.luciano.library.service.BookService;
+import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/books")
+@RequestMapping("/books")
 public class BookController {
 
     @Autowired
@@ -52,10 +53,6 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(dto);
     }
 
-
-
-
-
     @PutMapping(value = "/{id}")
     public ResponseEntity<BookDTO> update(@PathVariable Long id, @RequestBody BookDTO dto){
         Book book = mapper.map(dto, Book.class);
@@ -65,8 +62,12 @@ public class BookController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<BookDTO> deleteById(@PathVariable Long id){
-        System.out.println(id);
-        return null;
+    public ResponseEntity<Boolean> deleteById(@PathVariable Long id){
+        boolean resultado = service.deleteById(id);
+        if(resultado){
+            return ResponseEntity.ok().body(resultado);
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultado);
     }
 }

@@ -1,8 +1,8 @@
 package br.com.luciano.library.service;
 
-import br.com.luciano.library.BookRepository;
-import br.com.luciano.library.exception.BookNotFoundException;
+import br.com.luciano.library.repository.BookRepository;
 import br.com.luciano.library.model.Book;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -27,7 +27,12 @@ public class BookService {
           return repository.save(book);
      }
 
-     public void deleteById(Long id){
-          repository.deleteById(id);
+     public boolean deleteById(Long id){
+          try{
+               repository.deleteById(id);
+               return true;
+          }catch(EmptyResultDataAccessException ex){
+               return false;
+          }
      }
 }
